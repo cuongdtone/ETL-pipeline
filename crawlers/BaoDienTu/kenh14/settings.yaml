@@ -1,0 +1,12 @@
+MONGO_URI : '192.168.1.161:27017'
+MONGO_DB : 'CrawlerDataDB'
+
+SOCKET:
+  HOST : "103.113.83.194"
+  PORT : 9006
+  URL : "http://103.113.83.194:9006"
+
+DOMAIN : "https://kenh14.vn/"
+SLEEP : 5
+LIMIT : 30
+TOTAL_PAGE: 31

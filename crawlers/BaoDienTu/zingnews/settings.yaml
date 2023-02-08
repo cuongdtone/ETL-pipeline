@@ -1,0 +1,11 @@
+MONGO_URI : 'mongodb://tpos:NyPyM0E5qcZ0oe8osGNakqErzqDVvsCcSHjMkH3lnNY=@103.113.83.50:27017/?authSource=CrawlerDataDB&authMechanism=SCRAM-SHA-1'
+MONGO_DB : 'CrawlerDataDB'
+
+SOCKET:
+  HOST : "103.113.83.194"
+  PORT : 9006
+  URL : "http://103.113.83.194:9006"
+
+DOMAIN : "https://zingnews.vn"
+SLEEP : 5
+LIMIT : 30
