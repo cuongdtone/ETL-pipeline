@@ -1,9 +1,7 @@
 
 ##################### dev env
-import os
-if os.getenv('PROD') != 'TRUE':
-    from env_dev import set_dev_env
-    set_dev_env()
+from set_env import set_dev_env
+set_dev_env()
 #####################
 
 import crawl

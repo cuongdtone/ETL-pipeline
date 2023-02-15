@@ -9,12 +9,11 @@ import requests
 import yaml
 from bs4 import BeautifulSoup
 
-from utils.db_handler import ConnectDB, InsertNews
+# from utils.db_handler import ConnectDB, InsertNews
 from utils.kafka_handler import KafkaHandler
 
 
-db = ConnectDB()
-# kafka_db = KafkaHandler()
+kafka_db = KafkaHandler()
 DOMAIN = os.getenv('DOMAIN')
 
 headers = {
@@ -82,9 +81,7 @@ def parse(url_post, id_post):
             post["tags"] = tags
             post["posting_date"] = posting_date
             post["created_date"] = created_at
-            # kafka_db.send(post)
-            # print(post)
-            InsertNews(db, post)
+            kafka_db.send(post)
 
     except Exception as exc:
         print(f"{DOMAIN}__{'crawl.parse'}: {exc}")
@@ -118,7 +115,6 @@ def crawl_data():
 def start_crawl():
     try:
         crawl_data()
-    except Exception as e:
-        print(e)
+    except:
         raise Exception("Message")
 
