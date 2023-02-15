@@ -13,7 +13,7 @@ from airflow.example_dags.libs.helper import print_stuff
 
 with DAG(
     dag_id='kenh14_crawler',
-    schedule_interval='20 3 * * *',
+    schedule_interval='25 3 * * *',
     start_date=pendulum.datetime(2022, 1, 1, tz="UTC"),
     catchup=False,
     tags=['crawler'],
