@@ -5,6 +5,7 @@ from airflow import DAG
 from airflow.contrib.operators.kubernetes_pod_operator import KubernetesPodOperator
 from airflow.operators.dummy_operator import DummyOperator
 
+# test change on git repo
 
 IMAGE = f"cuongtran73d1/airflow:env"
 KENH14 = 'BaoDienTu/kenh14/main.py'
