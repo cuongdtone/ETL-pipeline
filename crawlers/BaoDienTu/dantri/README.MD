@@ -1,4 +1,4 @@
-# Crawler Template for Airflow
+# Crawler Template for Airflo
 ***
 ## Config with environment variables
 
