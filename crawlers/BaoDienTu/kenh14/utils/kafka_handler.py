@@ -19,8 +19,9 @@ class KafkaHandler:
             value_serializer=serializer
         )
         self.topic = os.getenv('KAFKA_TOPIC')
+        print('KAFKA: ', os.getenv('KAFKA_BOOTSTRAP_SERVER'))
 
-    def send(self, item):
+    def put(self, item):
         try:
             print(item)
             self.producer.send(self.topic, item)

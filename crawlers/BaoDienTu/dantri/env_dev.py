@@ -12,6 +12,9 @@ def set_dev_env():
     os.environ['KAFKA_TOPIC'] = 'news'
     os.environ['MONGO_URI'] = '192.168.1.159:27017'
     os.environ['MONGO_DB'] = 'CrawlerDataDB'
-    os.environ['DOMAIN'] = 'https://kenh14.vn/'
+    os.environ['MONGO_COLLECTION'] = 'news'
+
+    os.environ['DOMAIN'] = 'https://dantri.com.vn/'
+    os.environ['SLEEP'] = '10'
 
 

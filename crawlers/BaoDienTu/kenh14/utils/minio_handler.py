@@ -61,7 +61,7 @@ class MinioHandler:
     def put_object(self, file_data, file_name, content_type):
         try:
             datetime_prefix = time.time()
-            object_name = f"{file_name}"
+            object_name = f"{datetime_prefix}_{file_name}"
             while self.check_file_name_exists(bucket_name=self.bucket_name, file_name=object_name):
                 random_prefix = random.randint(1, 1000)
                 object_name = f"{datetime_prefix}_{random_prefix}_{file_name}"

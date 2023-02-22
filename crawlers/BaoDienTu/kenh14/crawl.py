@@ -3,18 +3,16 @@
 import json
 import os
 from datetime import date
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import requests
 import yaml
 from bs4 import BeautifulSoup
 
-from utils.db_handler import ConnectDB, InsertNews
-from utils.kafka_handler import KafkaHandler
+from utils.data_access import DataHandler
 
 
-db = ConnectDB()
-# kafka_db = KafkaHandler()
+db = DataHandler()
 DOMAIN = os.getenv('DOMAIN')
 
 headers = {
@@ -82,42 +80,98 @@ def parse(url_post, id_post):
             post["tags"] = tags
             post["posting_date"] = posting_date
             post["created_date"] = created_at
-            # kafka_db.send(post)
-            # print(post)
-            InsertNews(db, post)
 
+            # kafka_db.send(post)
+            # InsertNews(db, post)
+            return post
+        return None
     except Exception as exc:
         print(f"{DOMAIN}__{'crawl.parse'}: {exc}")
+        return None
 
 
-def crawl_data():
+def crawl_data(**kwargs):
     API_KENH14 = "https://kenh14.vn/timeline/laytinmoitronglist-{0}-1-1-1-1-1-0-1-1-1-1.chn"
-    page = 0
 
-    url = API_KENH14.format(page)
-    # print(url)
-    # tracklog.send(True, f"{DOMAIN}__{'Crawl Data'}: {url}")
+    if kwargs['mode'] == 'new':
+        page = 1
+        page_flag = True
+        while page_flag:
+            url = API_KENH14.format(page)
+            response = requests.get(url, headers=headers)
+            if response.status_code == 200:
+                data_list = json.loads(response.text)["data"]
+                if len(data_list) != 0:
+                    soup = BeautifulSoup(data_list, "html.parser")
+                    list_li = soup.find_all("li", {"class": "knswli need-get-value-facebook clearfix"})
 
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
-        data_list = json.loads(response.text)["data"]
+                    for li in list_li:
+                        a_first = li.div.a
+                        if a_first == None:
+                            continue
+                        url_post = "%s%s" % (DOMAIN, a_first["href"][1:])
+                        id_post = a_first["newsid"]
+                        post = parse(url_post, id_post)
 
-        if len(data_list) != 0:
-            soup = BeautifulSoup(data_list, "html.parser")
-            list_li = soup.find_all("li", {"class": "knswli need-get-value-facebook clearfix"})
+                        if post is not None:
+                            posting_date = post['posting_date']
+                            if posting_date.split('/').__len__() == 3:
+                                datetime_news = datetime.strptime(posting_date, '%d/%m/%Y').date()
+                                if datetime.today().date() == datetime_news:
+                                    db.put(post)
+                                else:
+                                    page_flag = False
+                                    break
+            page += 1
+            if page == 1000:  # each day crawl max 1000 page
+                break
 
-            for li in list_li:
-                a_first = li.div.a
-                if a_first == None:
-                    continue
-                url_post = "%s%s" % (DOMAIN, a_first["href"][1:])
-                id_post = a_first["newsid"]
-                parse(url_post, id_post)
+    elif kwargs['mode'] == 'old':
+        page = kwargs['recent_page']
+
+        recent_date = kwargs['recent_date']
+        recent_date = datetime.strptime(recent_date, '%d/%m/%Y').date()
+
+        end_date = kwargs['end_date']
+        end_date = datetime.strptime(end_date, '%d/%m/%Y').date()
+        print(end_date)
+
+        page_flag = True
+        while page_flag:
+            url = API_KENH14.format(page)
+            response = requests.get(url, headers=headers)
+            if response.status_code == 200:
+                data_list = json.loads(response.text)["data"]
+                if len(data_list) != 0:
+                    soup = BeautifulSoup(data_list, "html.parser")
+                    list_li = soup.find_all("li", {"class": "knswli need-get-value-facebook clearfix"})
+
+                    for li in list_li:
+                        a_first = li.div.a
+                        if a_first == None:
+                            continue
+                        url_post = "%s%s" % (DOMAIN, a_first["href"][1:])
+                        id_post = a_first["newsid"]
+                        post = parse(url_post, id_post)
+
+                        if post is not None:
+                            posting_date = post['posting_date']
+                            # print(posting_date)
+                            if posting_date.split('/').__len__() == 3:
+                                datetime_news = datetime.strptime(posting_date, '%d/%m/%Y').date()
+                                if recent_date > datetime_news >= end_date:
+                                    db.put(post)
+                                elif datetime_news < end_date:
+                                    page_flag = False
+                                    break
+            page += 1
+            if page == kwargs['recent_page'] + 1000:  # each day crawl max 1000 page
+                page_flag = False
 
 
-def start_crawl():
+def start_crawl(**kwargs):
     try:
-        crawl_data()
+        crawl_data(**kwargs)
     except Exception as e:
         print(e)
         raise Exception("Message")
