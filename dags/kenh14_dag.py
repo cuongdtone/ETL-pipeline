@@ -1,5 +1,5 @@
 from kubernetes.client import models as k8s
-from .base import env_base
+from base import env_base
 import logging
 import os
 
