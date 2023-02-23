@@ -28,7 +28,7 @@ with DAG(
                     ),
                     k8s.V1Container(
                         name="sidecar",
-                        image="cuongtran73d1/crawler:latest",
+                        image="cuongtran73d1/crawlers:latest",
                         args=["python /crawlers/BaoDienTu/kenh14/main.py"],
                         command=["bash", "-cx"],
                         env=[
