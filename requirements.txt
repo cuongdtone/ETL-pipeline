@@ -12,3 +12,4 @@ requests-html==0.10.0
 selenium==3.141.0
 Unidecode==1.2.0
 kafka-python
+minio
