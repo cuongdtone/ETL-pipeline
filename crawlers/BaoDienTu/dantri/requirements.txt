@@ -1,0 +1,13 @@
+pymongo==3.11.0
+PyYAML==5.3.1
+requests==2.24.0
+beautifulsoup4==4.9.2
+python-engineio==3.14.2
+python-socketio==4.6.0
+lxml==4.6.1
+pytz==2021.1
+pydantic==1.8.2
+pandas==0.23.4
+requests-html==0.10.0
+selenium==3.141.0
+Unidecode==1.2.0

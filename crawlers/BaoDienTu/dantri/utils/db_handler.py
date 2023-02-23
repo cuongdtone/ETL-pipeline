@@ -15,7 +15,7 @@ MONGO_COLLECTION = os.getenv('MONGO_COLLECTION')
 
 DOMAIN = os.getenv('DOMAIN')
 
-print('MONGO: ', MONGO_URI, MONGO_DB)
+print('MONGO: ', MONGO_URI, MONGO_DB, MONGO_COLLECTION)
 
 
 class MongoHandler:
